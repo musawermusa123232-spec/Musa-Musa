@@ -3,108 +3,149 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nivocredit Payment</title>
+  <title>Nivocredit - Payment Gateway</title>
   <style>
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; font-family: Arial, sans-serif; }
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
       background: #f4f7fb;
-      color: #172033;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      padding: 20px;
+      padding: 15px;
     }
-    .card {
+    .payment-card {
       background: #ffffff;
       padding: 25px;
       border-radius: 12px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.1);
       width: 100%;
-      max-width: 400px;
-    }
-    h2 {
-      margin-top: 0;
-      color: #0d6efd;
+      max-width: 380px;
       text-align: center;
     }
-    .form-group {
+    h2 { color: #0d6efd; margin-top: 0; margin-bottom: 5px; }
+    .sub-title { color: #555; font-size: 14px; margin-bottom: 15px; }
+    .details-box {
+      background: #f8f9fa;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      text-align: left;
+      font-size: 14px;
+      border: 1px solid #e9ecef;
+    }
+    .details-box p { margin: 6px 0; }
+    .amount-display { font-size: 20px; font-weight: bold; color: #28a745; }
+    .qr-container { margin: 15px 0; }
+    .qr-container img { border: 2px solid #ddd; border-radius: 8px; padding: 5px; }
+    .timer { font-weight: bold; color: #dc3545; margin-bottom: 15px; font-size: 14px; }
+    .upi-copy-box {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #e9ecef;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 13px;
       margin-bottom: 15px;
     }
-    label {
-      display: block;
-      margin-bottom: 6px;
-      font-weight: bold;
-      font-size: 14px;
-    }
-    input {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #cccccc;
-      border-radius: 6px;
-      font-size: 15px;
+    .copy-btn {
+      background: #0d6efd;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
     }
     .pay-btn {
       display: block;
       width: 100%;
-      background-color: #28a745;
-      color: #ffffff;
-      text-align: center;
+      background: #28a745;
+      color: white;
+      text-decoration: none;
       padding: 12px;
-      border: none;
       border-radius: 6px;
       font-weight: bold;
       font-size: 16px;
-      margin-top: 20px;
-      cursor: pointer;
-    }
-    .pay-btn:active {
-      background-color: #218838;
     }
   </style>
 </head>
 <body>
 
-  <div class="card">
-    <h2>Nivocredit Payment</h2>
+  <div class="payment-card">
+    <h2>Nivocredit</h2>
+    <div class="sub-title">Secure UPI Payment Request</div>
 
-    <div class="form-group">
-      <label for="custName">Customer Name:</label>
-      <input type="text" id="custName" placeholder="Customer name enter karein">
+    <div class="details-box">
+      <p><strong>Customer Name:</strong> <span id="displayName"></span></p>
+      <p><strong>Amount:</strong> ₹<span id="displayAmount" class="amount-display">0</span></p>
     </div>
 
-    <div class="form-group">
-      <label for="amount">Amount (₹):</label>
-      <input type="number" id="amount" placeholder="Amount enter karein">
+    <div class="timer">Link expires in: <span id="timer">10:00</span></div>
+
+    <div class="qr-container">
+      <img id="qrImage" src="" alt="UPI QR Code" width="200" height="200">
     </div>
 
-    <button type="button" class="pay-btn" onclick="processPayment()">Pay Now via UPI</button>
+    <div class="upi-copy-box">
+      <span id="upiText">7004738614@mbk</span>
+      <button class="copy-btn" onclick="copyUpi()">Copy UPI</button>
+    </div>
+
+    <a id="payNowBtn" href="#" class="pay-btn">Pay Now via UPI</a>
   </div>
 
   <script>
-    function processPayment() {
-      // Aapki UPI details set hain
-      const myUpiId = "7004738614@mbk";
-      const myName = "Nivocredit";
+    // ==========================================
+    // 1. FILE KE ANDAR SE CUSTOMER NAME CHANGE KAREIN:
+    const CUSTOMER_NAME = "Musa Customer"; // Yahan naam badlein
+    
+    // 2. AAPKI UPI ID AUR BUSINESS NAME:
+    const UPI_ID = "7004738614@mbk";
+    const BUSINESS_NAME = "Nivocredit";
+    // ==========================================
 
-      const customerName = document.getElementById('custName').value.trim();
-      const amount = document.getElementById('amount').value.trim();
+    // Dynamic Amount fetch karne ke liye (URL parameter se)
+    const urlParams = new URLSearchParams(window.location.search);
+    let amount = urlParams.get('amount') || "100"; // Default amount 100 agar link me na ho
 
-      if (!amount || amount <= 0) {
-        alert("Kripya sahi amount enter karein!");
-        return;
-      }
+    document.getElementById('displayName').innerText = CUSTOMER_NAME;
+    document.getElementById('displayAmount').innerText = amount;
 
-      const note = encodeURIComponent("Payment from " + (customerName || "Customer"));
-      
-      // Direct UPI URL Redirect
-      const upiUrl = `upi://pay?pa=${myUpiId}&pn=${encodeURIComponent(myName)}&am=${amount}&tn=${note}&cu=INR`;
-      
-      // Page ko UPI link par bhejega
-      window.location.href = upiUrl;
+    // UPI Link Generation
+    const note = encodeURIComponent("Payment from " + CUSTOMER_NAME);
+    const upiUrl = `upi://pay?pa=${UPI_ID}&pn=${encodeURIComponent(BUSINESS_NAME)}&am=${amount}&tn=${note}&cu=INR`;
+
+    // Set Pay Button Link
+    document.getElementById('payNowBtn').href = upiUrl;
+
+    // Generate Dynamic QR Code Image URL
+    const qrApi = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiUrl)}`;
+    document.getElementById('qrImage').src = qrApi;
+
+    // Copy UPI ID Function
+    function copyUpi() {
+      navigator.clipboard.writeText(UPI_ID);
+      alert("UPI ID Copied: " + UPI_ID);
     }
+
+    // 10-Minute Countdown Timer
+    let timeLeft = 600;
+    const timerElement = document.getElementById('timer');
+    const interval = setInterval(() => {
+      let minutes = Math.floor(timeLeft / 60);
+      let seconds = timeLeft % 60;
+      seconds = seconds < 10 ? '0' + seconds : seconds;
+      timerElement.innerText = `${minutes}:${seconds}`;
+      if (timeLeft === 0) {
+        clearInterval(interval);
+        timerElement.innerText = "EXPIRED";
+        document.getElementById('payNowBtn').style.display = 'none';
+      }
+      timeLeft--;
+    }, 1000);
   </script>
 
 </body>
