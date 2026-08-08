@@ -1,157 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nivocredit - Payment Request</title>
-
-<style>
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#f4f7fb;
-  color:#172033;
-}
-.container{
-  max-width:430px;
-  margin:auto;
-  padding:20px;
-}
-.card{
-  background:white;
-  margin-top:35px;
-  border-radius:22px;
-  padding:25px;
-  box-shadow:0 10px 35px rgba(0,0,0,.10);
-}
-.logo{
-  width:58px;height:58px;border-radius:16px;
-  background:#1769ff;color:white;
-  display:flex;align-items:center;justify-content:center;
-  font-size:25px;font-weight:bold;margin:auto;
-}
-h1{text-align:center;font-size:24px;margin:15px 0 5px}
-.subtitle{text-align:center;color:#687386;font-size:14px}
-.amount{text-align:center;font-size:38px;font-weight:bold;margin:25px 0}
-.info{background:#f6f8fc;border-radius:14px;padding:15px}
-.row{display:flex;justify-content:space-between;padding:9px 0;font-size:14px}
-.label{color:#718096}.value{font-weight:bold}
-.qr{text-align:center;margin:20px 0}
-.qr img{width:190px;height:190px;border-radius:12px}
-.pay{
-  display:block;width:100%;padding:16px;border:0;
-  border-radius:13px;background:#1769ff;color:white;
-  font-size:17px;font-weight:bold;text-decoration:none;text-align:center;
-}
-.note{text-align:center;color:#7b8494;font-size:12px;margin-top:18px;line-height:1.5}
-.timer{text-align:center;color:#d33;font-weight:bold;margin-bottom:15px}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nivocredit - Professional Payment Request</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f7fb;
+      color: #172033;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .card {
+      background: #ffffff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+    h2 {
+      margin-top: 0;
+      color: #0d6efd;
+      text-align: center;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #cccccc;
+      border-radius: 6px;
+      font-size: 15px;
+    }
+    .pay-btn {
+      display: block;
+      width: 100%;
+      background-color: #28a745;
+      color: #ffffff;
+      text-align: center;
+      padding: 12px;
+      border-radius: 6px;
+      font-weight: bold;
+      text-decoration: none;
+      font-size: 16px;
+      margin-top: 20px;
+    }
+  </style>
 </head>
-
 <body>
 
-<div class="container">
-<div class="card">
+  <div class="card">
+    <h2>Nivocredit Payment</h2>
 
-<div class="logo">₹</div>
+    <div class="form-group">
+      <label for="custName">Customer Name:</label>
+      <input type="text" id="custName" placeholder="Customer name enter karein">
+    </div>
 
-<h1>Nivocredit</h1>
-<div class="subtitle">Secure UPI Payment</div>
+    <div class="form-group">
+      <label for="amount">Amount (₹):</label>
+      <input type="number" id="amount" placeholder="Amount enter karein">
+    </div>
 
-<div class="amount" id="amount">₹0</div>
+    <a id="payLink" href="#" class="pay-btn" onclick="generateLink(event)">Pay Now via UPI</a>
+  </div>
 
-<div class="timer">
-Link expires in: <span id="timer">30:00</span>
-</div>
+  <script>
+    function generateLink(event) {
+      // ===== YAHAN APNI DETAILS DAALEIN =====
+      const myUpiId = "YOUR_UPI_ID@okaxis"; // Apni asli UPI ID yahan daalein
+      const myName = "Nivocredit";          // Apna Business Name daalein
+      // =====================================
 
-<div class="info">
+      const customerName = document.getElementById('custName').value.trim();
+      const amount = document.getElementById('amount').value.trim();
 
-<div class="row">
-<span class="label">Customer</span>
-<span class="value" id="customer">Customer</span>
-</div>
+      if (!amount || amount <= 0) {
+        alert("Kripya sahi amount enter karein!");
+        event.preventDefault();
+        return false;
+      }
 
-<div class="row">
-<span class="label">Invoice</span>
-<span class="value" id="invoice">INV-001</span>
-</div>
+      const note = encodeURIComponent("Payment from " + (customerName || "Customer"));
+      const upiUrl = `upi://pay?pa=${myUpiId}&pn=${encodeURIComponent(myName)}&am=${amount}&tn=${note}&cu=INR`;
 
-<div class="row">
-<span class="label">UPI ID</span>
-<span class="value">7004738614@mbk</span>
-</div>
-
-</div>
-
-<div class="qr">
-<img id="qr" src="" alt="UPI QR Code">
-</div>
-
-<a id="payButton" class="pay" href="#">
-Pay with UPI
-</a>
-
-<div class="note">
-Please verify the payment details before completing your payment.
-This page is only a payment request interface and does not itself
-confirm successful payment.
-</div>
-
-</div>
-</div>
-
-<script>
-
-const UPI_ID = "7004738614@mbk";
-const BUSINESS_NAME = "Nivocredit";
-
-/* Read information from URL */
-const params = new URLSearchParams(window.location.search);
-
-const CUSTOMER_NAME = params.get("customer") || "Customer";
-const AMOUNT = params.get("amount") || "0";
-const INVOICE = params.get("invoice") || "INV-001";
-
-/* Show details */
-document.getElementById("amount").innerText = "₹" + AMOUNT;
-document.getElementById("customer").innerText = CUSTOMER_NAME;
-document.getElementById("invoice").innerText = INVOICE;
-
-/* Create UPI payment link */
-const upiLink =
-"upi://pay?pa=" + encodeURIComponent(UPI_ID) +
-"&pn=" + encodeURIComponent(BUSINESS_NAME) +
-"&am=" + encodeURIComponent(AMOUNT) +
-"&cu=INR" +
-"&tn=" + encodeURIComponent("Invoice " + INVOICE);
-
-/* Create QR */
-document.getElementById("qr").src =
-"https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=" +
-encodeURIComponent(upiLink);
-
-/* Pay button */
-document.getElementById("payButton").href = upiLink;
-
-/* 30 minute timer */
-let seconds = 30 * 60;
-
-function countdown(){
-let min = Math.floor(seconds / 60);
-let sec = seconds % 60;
-
-document.getElementById("timer").innerText =
-String(min).padStart(2,"0") + ":" +
-String(sec).padStart(2,"0");
-
-if(seconds > 0) seconds--;
-}
-
-countdown();
-setInterval(countdown,1000);
-
-</script>
+      document.getElementById('payLink').href = upiUrl;
+    }
+  </script>
 
 </body>
 </html>
