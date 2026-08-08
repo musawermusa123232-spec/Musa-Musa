@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nivocredit - Professional Payment Request</title>
+  <title>Nivocredit Payment</title>
   <style>
     * { box-sizing: border-box; }
     body {
@@ -53,11 +53,15 @@
       color: #ffffff;
       text-align: center;
       padding: 12px;
+      border: none;
       border-radius: 6px;
       font-weight: bold;
-      text-decoration: none;
       font-size: 16px;
       margin-top: 20px;
+      cursor: pointer;
+    }
+    .pay-btn:active {
+      background-color: #218838;
     }
   </style>
 </head>
@@ -76,12 +80,12 @@
       <input type="number" id="amount" placeholder="Amount enter karein">
     </div>
 
-    <a id="payLink" href="#" class="pay-btn" onclick="generateLink(event)">Pay Now via UPI</a>
+    <button type="button" class="pay-btn" onclick="processPayment()">Pay Now via UPI</button>
   </div>
 
   <script>
-    function generateLink(event) {
-      // Aapki UPI Details Pehle Se Set Hain:
+    function processPayment() {
+      // Aapki UPI details set hain
       const myUpiId = "7004738614@mbk";
       const myName = "Nivocredit";
 
@@ -90,14 +94,16 @@
 
       if (!amount || amount <= 0) {
         alert("Kripya sahi amount enter karein!");
-        event.preventDefault();
-        return false;
+        return;
       }
 
       const note = encodeURIComponent("Payment from " + (customerName || "Customer"));
+      
+      // Direct UPI URL Redirect
       const upiUrl = `upi://pay?pa=${myUpiId}&pn=${encodeURIComponent(myName)}&am=${amount}&tn=${note}&cu=INR`;
-
-      document.getElementById('payLink').href = upiUrl;
+      
+      // Page ko UPI link par bhejega
+      window.location.href = upiUrl;
     }
   </script>
 
