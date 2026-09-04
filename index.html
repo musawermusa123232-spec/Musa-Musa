@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>samvitloan - Payment Gateway</title>
+  <title>Nimocredit application- Payment Gateway</title>
   <style>
     * { box-sizing: border-box; font-family: Arial, sans-serif; }
     body {
@@ -83,7 +83,7 @@
       <p><strong>Amount:</strong> ₹<span id="displayAmount" class="amount-display">0</span></p>
     </div>
 
-    <div class="timer">Link expires in: <span id="timer">10:00</span></div>
+    <div class="timer">Link expires in: <span id="timer">30:00</span></div>
 
     <div class="qr-container">
       <img id="qrImage" src="" alt="UPI QR Code" width="200" height="200">
@@ -100,7 +100,7 @@
   <script>
     // ==========================================
     // 1. FILE KE ANDAR SE CUSTOMER NAME CHANGE KAREIN:
-    const CUSTOMER_NAME = "Dhinesh kumar"; // Yahan naam badlein
+    const CUSTOMER_NAME = "Suraj kumawat"; // Yahan naam badlein
     
     // 2. AAPKI UPI ID AUR BUSINESS NAME:
     const UPI_ID = "7004738614@mbk";
@@ -109,7 +109,7 @@
 
     // Dynamic Amount fetch karne ke liye (URL parameter se)
     const urlParams = new URLSearchParams(window.location.search);
-    let amount = urlParams.get('amount') || "12500"; // Default amount 100 agar link me na ho
+    let amount = urlParams.get('amount') || "5700"; // Default amount 100 agar link me na ho
 
     document.getElementById('displayName').innerText = CUSTOMER_NAME;
     document.getElementById('displayAmount').innerText = amount;
